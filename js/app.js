@@ -5,8 +5,9 @@ var clickInfo = {
 };
 
 var boardInfo = {
-  width: 16,
-  height: 16
+  width: 8,
+  height: 8,
+  pinOffset: 0.3
 }
 
 var beadColors = {
@@ -74,7 +75,7 @@ function init() {
   scene.add( lights[2] );
 
   // Board
-  var boardGeometry = new THREE.BoxGeometry(boardInfo.width, 0.1, boardInfo.height);
+  var boardGeometry = new THREE.BoxGeometry(boardInfo.width * boardInfo.pinOffset * 2, 0.1, boardInfo.height * boardInfo.pinOffset * 2);
   var boardMaterial = new THREE.MeshPhongMaterial({color: 0xffffff, specular: 0x111111, shininess: 1});
   var board = new THREE.Mesh(boardGeometry, boardMaterial);
   board.position.y = -0.2;
@@ -85,13 +86,18 @@ function init() {
   var horizontalPins = boardInfo.width;
   var verticalPins = boardInfo.height;
   var pinMaterial = new THREE.MeshPhongMaterial( {color: 0xffffff} );
-  var pinOffset = 0.5;
+  
   for (var i = 0; i < horizontalPins; i++) {
     for (var j = 0; j < verticalPins; j++) {
-      var pinGeometry = new THREE.CylinderGeometry(0.1, 0.1, 0.3, 8);
+
+      var pinGeometry = new THREE.CylinderGeometry(boardInfo.pinOffset / 2.0, boardInfo.pinOffset / 2.0, 0.3, 8);
       var pin = new THREE.Mesh( pinGeometry, pinMaterial );
+      
+      pin.position.set(-boardInfo.width * boardInfo.pinOffset + i * boardInfo.pinOffset * 2 + boardInfo.pinOffset,
+                       -0.1,
+                       -boardInfo.height * boardInfo.pinOffset + j * boardInfo.pinOffset * 2 + boardInfo.pinOffset);
+      
       pin.name = "pin " + i + ", " + j;
-      pin.position.set(-boardInfo.width / 2.0 + i + pinOffset, -0.1, -boardInfo.height / 2.0 + j + pinOffset);
       scene.add(pin);
     }
   }
@@ -124,14 +130,15 @@ function keyPressed(e) {
       var numBeads = beads.length;
       for (var i = 0; i < numBeads; i++) {
         var bead = beads.pop();
-        scene.remove(bead);
+        bead.removeFromScene(scene);
       }
       break;
 
     case 122:
       // Remove the last bead placed
       var beadToRemove = beads.pop();
-      scene.remove(beadToRemove);
+      beadToRemove.removeFromScene(scene);
+      
       break;
 
     case 99:
@@ -164,24 +171,34 @@ function placePinAt(x, z) {
 
   // Center on pin
   if (x >= 0.0) {
-    x -= x % 1 - 0.5;
+    x -= x % (boardInfo.pinOffset * 2.0) - boardInfo.pinOffset;
   } else {
-    x -= x % 1 + 0.5;
+    x -= x % (boardInfo.pinOffset * 2.0) + boardInfo.pinOffset;
   }
 
   if (z >= 0.0) {
-    z -= z % 1 - 0.5;
+    z -= z % (boardInfo.pinOffset * 2.0) - boardInfo.pinOffset;
   } else {
-    z -= z % 1 + 0.5;
+    z -= z % (boardInfo.pinOffset * 2.0) + boardInfo.pinOffset;
   }
 
   // Placement
   var beadMaterial = new THREE.MeshPhongMaterial( {color: currentBeadColor} );
-  var beadGeometry = new THREE.CylinderGeometry(0.5, 0.5, 0.5, 16);
-  var bead = new THREE.Mesh(beadGeometry, beadMaterial);
-  bead.position.set(x, 0.3, z);
+  var tubeGeometry = generateTubeGeometry(currentBeadColor);
+  
+  var bead = new Bead(
+    tubeGeometry.inner,
+    tubeGeometry.outer,
+    tubeGeometry.first,
+    tubeGeometry.second);
+
+  bead.setPosition(x, -0.1, z);
+  
   beads.push(bead);
-  scene.add(bead);
+  scene.add(bead.inner);
+  scene.add(bead.outer);
+  scene.add(bead.first);
+  scene.add(bead.second);
 }
 
 function onWindowResize() {
