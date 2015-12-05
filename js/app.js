@@ -1,37 +1,27 @@
+// Engine stuff
+var windowHalfX = window.innerWidth / 2,
+    windowHalfY = window.innerHeight / 2,
+
+camera, scene, renderer,
+projector, raycaster, directionVector;
+
+// Game objects
+var board;
+var beads = [];
+var currentBeadColor = Bead.colors.red;
 var clickInfo = {
   x: 0,
   y: 0,
   userHasClicked: false
 };
 
-var boardInfo = {
-  width: 8,
-  height: 8,
-  pinOffset: 0.3
-}
-
-var beadColors = {
-  red: 0xff0000,
-  green: 0x00ff00,
-  blue: 0x0000ff,
-  yellow: 0xffff00
-};
-
-var currentBeadColor = beadColors.red;
-
-var mouseX = 0, mouseY = 0,
-
-windowHalfX = window.innerWidth / 2,
-windowHalfY = window.innerHeight / 2,
-
-camera, scene, renderer,
-projector, raycaster, directionVector;
-
-var beads = [];
-
+// Start!
 init();
 animate();
 
+/**
+ * Init method: game setup
+ */
 function init() {
 
   // Setup
@@ -75,27 +65,28 @@ function init() {
   scene.add(lights[2]);
 
   // Board
-  var boardGeometry = new THREE.BoxGeometry(boardInfo.width * boardInfo.pinOffset * 2, 0.1, boardInfo.height * boardInfo.pinOffset * 2);
+  board = new Board(8, 8);
+  var boardGeometry = new THREE.BoxGeometry(board.width * board.pinOffset * 2, 0.1, board.height * board.pinOffset * 2);
   var boardMaterial = new THREE.MeshPhongMaterial({color: 0xffffff, specular: 0x111111, shininess: 1});
-  var board = new THREE.Mesh(boardGeometry, boardMaterial);
-  board.position.y = -0.2;
-  board.name = "board";
-  scene.add(board);
+  var boardMesh = new THREE.Mesh(boardGeometry, boardMaterial);
+  boardMesh.position.y = -0.2;
+  boardMesh.name = "board";
+  scene.add(boardMesh);
 
   // Board pins
-  var horizontalPins = boardInfo.width;
-  var verticalPins = boardInfo.height;
+  var horizontalPins = board.width;
+  var verticalPins = board.height;
   var pinMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
   
   for (var i = 0; i < horizontalPins; i++) {
     for (var j = 0; j < verticalPins; j++) {
 
-      var pinGeometry = new THREE.CylinderGeometry(boardInfo.pinOffset / 2.0, boardInfo.pinOffset / 2.0, 0.3, 8);
+      var pinGeometry = new THREE.CylinderGeometry(board.pinOffset / 2.0, board.pinOffset / 2.0, 0.3, 16);
       var pin = new THREE.Mesh( pinGeometry, pinMaterial );
       
-      pin.position.set(-boardInfo.width * boardInfo.pinOffset + i * boardInfo.pinOffset * 2 + boardInfo.pinOffset,
+      pin.position.set(-board.width * board.pinOffset + i * board.pinOffset * 2 + board.pinOffset,
                        -0.1,
-                       -boardInfo.height * boardInfo.pinOffset + j * boardInfo.pinOffset * 2 + boardInfo.pinOffset);
+                       -board.height * board.pinOffset + j * board.pinOffset * 2 + board.pinOffset);
       
       pin.name = "pin " + i + ", " + j;
       scene.add(pin);
@@ -104,24 +95,23 @@ function init() {
 
   // Resize listener
   window.addEventListener('resize', onWindowResize, false);
+}
 
-  /**
-   * Controls
-   */
-  function onLeftClick(e) {
+/**
+ * Controls
+ */
+function onLeftClick(e) {
 
-    // Place
-    if (e.button == 0) {
-      clickInfo.userHasClicked = true;
-      clickInfo.x = e.clientX;
-      clickInfo.y = e.clientY;
-    }
+  // Place
+  if (e.button == 0) {
+    clickInfo.userHasClicked = true;
+    clickInfo.x = e.clientX;
+    clickInfo.y = e.clientY;
   }
 }
 
 function keyPressed(e) {
 
-  console.log(e.keyCode);
   // Color switch
   switch(e.keyCode) {
     case 114:
@@ -157,13 +147,13 @@ function keyPressed(e) {
 
     // Change colors
     case 49:
-      currentBeadColor = beadColors.red; break;
+      currentBeadColor = Bead.colors.red; break;
     case 50:
-      currentBeadColor = beadColors.green; break;
+      currentBeadColor = Bead.colors.green; break;
     case 51:
-      currentBeadColor = beadColors.blue; break;
+      currentBeadColor = Bead.colors.blue; break;
     case 52:
-      currentBeadColor = beadColors.yellow; break;
+      currentBeadColor = Bead.colors.yellow; break;
   }
 }
 
@@ -171,15 +161,15 @@ function placePinAt(x, z) {
 
   // Center on pin
   if (x >= 0.0) {
-    x -= x % (boardInfo.pinOffset * 2.0) - boardInfo.pinOffset;
+    x -= x % (board.pinOffset * 2.0) - board.pinOffset;
   } else {
-    x -= x % (boardInfo.pinOffset * 2.0) + boardInfo.pinOffset;
+    x -= x % (board.pinOffset * 2.0) + board.pinOffset;
   }
 
   if (z >= 0.0) {
-    z -= z % (boardInfo.pinOffset * 2.0) - boardInfo.pinOffset;
+    z -= z % (board.pinOffset * 2.0) - board.pinOffset;
   } else {
-    z -= z % (boardInfo.pinOffset * 2.0) + boardInfo.pinOffset;
+    z -= z % (board.pinOffset * 2.0) + board.pinOffset;
   }
 
   // Placement
@@ -213,6 +203,9 @@ function onWindowResize() {
 
 }
 
+/**
+ * Logic
+ */
 function animate() {
   controls.update();
 
@@ -255,6 +248,9 @@ function animate() {
   render();
 }
 
+/**
+ * Render
+ */
 function render() {
   renderer.render(scene, camera);
 }
