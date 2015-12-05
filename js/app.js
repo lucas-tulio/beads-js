@@ -63,16 +63,16 @@ function init() {
 
   // Lights
   var lights = [];
-  lights[0] = new THREE.DirectionalLight( 0xffffff, 0.5);
-  lights[1] = new THREE.DirectionalLight( 0xffffff, 0.5);
-  lights[2] = new THREE.DirectionalLight( 0xffffff, 0.5);
-  
-  lights[1].position.set( 100, 200, 100 );
-  lights[2].position.set( -100, -200, -100 );
+  lights[0] = new THREE.DirectionalLight(0xffffff, 0.5);
+  lights[1] = new THREE.DirectionalLight(0xffffff, 0.5);
+  lights[2] = new THREE.DirectionalLight(0xffffff, 0.5);
 
-  scene.add( lights[0] );
-  scene.add( lights[1] );
-  scene.add( lights[2] );
+  lights[1].position.set(100, 200, 100);
+  lights[2].position.set(-100, -200, -100);
+
+  scene.add(lights[0]);
+  scene.add(lights[1]);
+  scene.add(lights[2]);
 
   // Board
   var boardGeometry = new THREE.BoxGeometry(boardInfo.width * boardInfo.pinOffset * 2, 0.1, boardInfo.height * boardInfo.pinOffset * 2);
@@ -85,7 +85,7 @@ function init() {
   // Board pins
   var horizontalPins = boardInfo.width;
   var verticalPins = boardInfo.height;
-  var pinMaterial = new THREE.MeshPhongMaterial( {color: 0xffffff} );
+  var pinMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
   
   for (var i = 0; i < horizontalPins; i++) {
     for (var j = 0; j < verticalPins; j++) {

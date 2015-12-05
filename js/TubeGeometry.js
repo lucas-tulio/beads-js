@@ -6,10 +6,9 @@ function generateTubeGeometry(color) {
   var radiusSegments = 16;
   var tubeColor = color;
   var endTubeColor = color;
-  var wireframe = false;
 
-  var tubePath1 = [{"point" :new THREE.Vector3(0,0,0)},{"point" :new THREE.Vector3(0,0.3,0)}];
-  var actualPoints =[];
+  var tubePath1 = [{"point": new THREE.Vector3(0, -0.1, 0)}, {"point": new THREE.Vector3(0, 0.3, 0)}];
+  var actualPoints = [];
   for(var i = 0; i < tubePath1.length; i++) {
     actualPoints.push(tubePath1[i].point);
   }
@@ -21,8 +20,8 @@ function generateTubeGeometry(color) {
   outerTube.verticesNeedUpdate = true;
   outerTube.dynamic = true;
 
-  var outerTubeMesh = new THREE.Mesh(outerTube, new THREE.MeshBasicMaterial(
-  { color: tubeColor, shading: THREE.SmoothShading, side: THREE.DoubleSide, wireframe: wireframe, transparent: true,vertexColors: THREE.FaceColors, overdraw: false
+  var outerTubeMesh = new THREE.Mesh(outerTube, new THREE.MeshPhongMaterial({
+    specular: 0xffffff, shininess: 1, color: tubeColor, side: THREE.DoubleSide
   }));
   outerTubeMesh.name = "outerTube";
   outerTubeMesh.dynamic = true;
@@ -34,16 +33,16 @@ function generateTubeGeometry(color) {
   innerTube.verticesNeedUpdate = true;
   innerTube.dynamic = true;
 
-  var innerTubeMesh = new THREE.Mesh(innerTube, new THREE.MeshBasicMaterial(
-  { color: tubeColor, shading: THREE.SmoothShading, side: THREE.DoubleSide, wireframe: wireframe, transparent: true,vertexColors: THREE.FaceColors, overdraw: false
+  var innerTubeMesh = new THREE.Mesh(innerTube, new THREE.MeshPhongMaterial({
+    specular: 0xffffff, shininess: 1, color: tubeColor, side: THREE.DoubleSide
   }));
   innerTubeMesh.name = "innerTube";
   innerTubeMesh.dynamic = true;
   innerTubeMesh.needsUpdate = true;
   renderer.sortObjects = false;
 
-  var first = new THREE.Geometry()
-  for (i = 0; i < radiusSegments;i++) {
+  var first = new THREE.Geometry();
+  for (i = 0; i < radiusSegments; i++) {
     var j = i;
     var k= i*6;
 
@@ -58,12 +57,14 @@ function generateTubeGeometry(color) {
 
   };
 
-  first.mergeVertices()
-  var firstMesh = new THREE.Mesh(first, new THREE.MeshBasicMaterial(
-       { color: endTubeColor, shading: THREE.SmoothShading, side: THREE.DoubleSide, wireframe: wireframe, transparent: true,vertexColors: THREE.FaceColors, overdraw: false}));
+  first.computeFaceNormals();
+  first.mergeVertices();
+  var firstMesh = new THREE.Mesh(first, new THREE.MeshPhongMaterial({
+    specular: 0xffffff, shininess: 1, color: endTubeColor, side: THREE.DoubleSide
+  }));
 
-  var second = new THREE.Geometry()
-  for (i = 0; i < radiusSegments;i++) {
+  var second = new THREE.Geometry();
+  for (i = 0; i < radiusSegments; i++) {
     var j = i;
     var k= i*6;
 
@@ -77,9 +78,11 @@ function generateTubeGeometry(color) {
     second.faces.push( new THREE.Face3( k+3, k+4, k+5 ) );
   };
 
-  second.mergeVertices()
-  var secondMesh = new THREE.Mesh(second, new THREE.MeshBasicMaterial(
-       { color: endTubeColor, shading: THREE.SmoothShading, side: THREE.DoubleSide, wireframe: wireframe, transparent: true,vertexColors: THREE.FaceColors, overdraw: false}));
+  second.computeFaceNormals();
+  second.mergeVertices();
+  var secondMesh = new THREE.Mesh(second, new THREE.MeshPhongMaterial({
+    specular: 0xffffff, shininess: 1, color: endTubeColor, side: THREE.DoubleSide
+  }));
 
   return {
     outer: outerTubeMesh,
