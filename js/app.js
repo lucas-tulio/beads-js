@@ -227,7 +227,7 @@ function animate() {
     // Now we set our direction vector to those initial values
     directionVector.set(x, y, 1);
     // Unproject the vector
-    projector.unprojectVector(directionVector, camera);
+    directionVector.unproject(camera);
     // Substract the vector representing the camera position
     directionVector.sub(camera.position);
     // Normalize the vector, to avoid large numbers from the
