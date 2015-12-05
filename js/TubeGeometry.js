@@ -7,7 +7,7 @@ function generateTubeGeometry(color) {
   var tubeColor = color;
   var endTubeColor = color;
 
-  var tubePath1 = [{"point": new THREE.Vector3(0, -0.1, 0)}, {"point": new THREE.Vector3(0, 0.3, 0)}];
+  var tubePath1 = [{"point": new THREE.Vector3(0, -0.1, 0)}, {"point": new THREE.Vector3(0, 0.4, 0)}];
   var actualPoints = [];
   for(var i = 0; i < tubePath1.length; i++) {
     actualPoints.push(tubePath1[i].point);
