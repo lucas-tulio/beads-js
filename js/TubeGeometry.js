@@ -7,15 +7,14 @@ function generateTubeGeometry(color) {
   var tubeColor = color;
   var endTubeColor = color;
 
-  var tubePath1 = [{"point": new THREE.Vector3(0, -0.1, 0)}, {"point": new THREE.Vector3(0, 0.4, 0)}];
+  var tubePath = [{"point": new THREE.Vector3(0, -0.1, 0)}, {"point": new THREE.Vector3(0, 0.4, 0)}];
   var actualPoints = [];
-  for(var i = 0; i < tubePath1.length; i++) {
-    actualPoints.push(tubePath1[i].point);
+  for(var i = 0; i < tubePath.length; i++) {
+    actualPoints.push(tubePath[i].point);
   }
   var actualExtrudePath = new THREE.CatmullRomCurve3(actualPoints);
-  actualExtrudePath.dynamic = true;
-
-  var outerTube = new THREE.TubeGeometry(actualExtrudePath, segments, outerRadius, radiusSegments, false, false);
+  
+  var outerTube = new THREE.TubeGeometry(actualExtrudePath, segments, outerRadius, radiusSegments, false);
   outerTube.dynamic = true;
   outerTube.verticesNeedUpdate = true;
   outerTube.dynamic = true;
@@ -28,7 +27,7 @@ function generateTubeGeometry(color) {
   outerTubeMesh.needsUpdate = true;
   renderer.sortObjects = false;
 
-  var innerTube = new THREE.TubeGeometry(actualExtrudePath, segments, innerRadius, radiusSegments, false, false);
+  var innerTube = new THREE.TubeGeometry(actualExtrudePath, segments, innerRadius, radiusSegments, false);
   innerTube.dynamic = true;
   innerTube.verticesNeedUpdate = true;
   innerTube.dynamic = true;
@@ -68,14 +67,27 @@ function generateTubeGeometry(color) {
     var j = i;
     var k = i * 6;
 
-    second.vertices.push(outerTube.vertices[outerTube.vertices.length-2-j+0].clone());
-    second.vertices.push(outerTube.vertices[outerTube.vertices.length-2-j+1].clone());
-    second.vertices.push(innerTube.vertices[outerTube.vertices.length-2-j+0].clone());
-    second.faces.push( new THREE.Face3( k+0, k+1, k+2 ) );
-    second.vertices.push(innerTube.vertices[outerTube.vertices.length-2-j+0].clone());
-    second.vertices.push(innerTube.vertices[outerTube.vertices.length-2-j+1].clone());
-    second.vertices.push(outerTube.vertices[outerTube.vertices.length-2-j+1].clone());
-    second.faces.push( new THREE.Face3( k+3, k+4, k+5 ) );
+    if (i == radiusSegments - 1) {
+      // On the last one, connect the vertices back to the first ones, not to the next
+      second.vertices.push(outerTube.vertices[outerTube.vertices.length-2-j+1].clone());
+      second.vertices.push(outerTube.vertices[outerTube.vertices.length-1-0+0].clone()); // Back to the first outer vertex
+      second.vertices.push(innerTube.vertices[outerTube.vertices.length-2-0+1].clone()); // Back to the first inner vertex
+      second.faces.push( new THREE.Face3( k+0, k+1, k+2 ) );
+
+      second.vertices.push(innerTube.vertices[outerTube.vertices.length-2-0+1].clone()); // Back to the first inner vertex
+      second.vertices.push(innerTube.vertices[outerTube.vertices.length-2-j+1].clone());
+      second.vertices.push(outerTube.vertices[outerTube.vertices.length-2-j+1].clone());
+      second.faces.push( new THREE.Face3( k+3, k+4, k+5 ) );
+    } else {
+      second.vertices.push(outerTube.vertices[outerTube.vertices.length-2-j+0].clone());
+      second.vertices.push(outerTube.vertices[outerTube.vertices.length-2-j+1].clone());
+      second.vertices.push(innerTube.vertices[outerTube.vertices.length-2-j+0].clone());
+      second.faces.push( new THREE.Face3( k+0, k+1, k+2 ) );
+      second.vertices.push(innerTube.vertices[outerTube.vertices.length-2-j+0].clone());
+      second.vertices.push(innerTube.vertices[outerTube.vertices.length-2-j+1].clone());
+      second.vertices.push(outerTube.vertices[outerTube.vertices.length-2-j+1].clone());
+      second.faces.push( new THREE.Face3( k+3, k+4, k+5 ) );
+    }
   };
 
   second.computeFaceNormals();
