@@ -67,8 +67,8 @@ THREE.OrbitControls = function ( object, domElement ) {
   // Set to true to disable use of the keys
   this.noKeys = false;
 
-  // The four arrow keys
-  this.keys = { LEFT: 37, UP: 38, RIGHT: 39, BOTTOM: 40 };
+  // The four movement keys
+  this.keys = { W: 87, A: 83, S: 65, D: 68, wDown: false, aDown: false, sDown: false, dDown: false };
 
   ////////////
   // internals
@@ -229,6 +229,20 @@ THREE.OrbitControls = function ( object, domElement ) {
   };
 
   this.update = function () {
+
+    // Controls
+    // Movement according to key states
+    if (scope.keys.wDown) {
+      scope.pan( 0, scope.keyPanSpeed );
+    } else if (scope.keys.sDown) {
+      scope.pan( scope.keyPanSpeed, 0 );
+    }
+
+    if (scope.keys.aDown) {
+      scope.pan( 0, - scope.keyPanSpeed );
+    } else if (scope.keys.dDown) {
+      scope.pan( - scope.keyPanSpeed, 0 );
+    }
 
     var position = this.object.position;
 
@@ -460,31 +474,55 @@ THREE.OrbitControls = function ( object, domElement ) {
   function onKeyDown( event ) {
 
     if ( scope.enabled === false || scope.noKeys === true || scope.noPan === true ) return;
-    
+
+    // Check key press
     switch ( event.keyCode ) {
-
-      case scope.keys.UP:
-        scope.pan( 0, scope.keyPanSpeed );
-        scope.update();
+      case scope.keys.W:
+        scope.keys.wDown = true;
+        scope.keys.sDown = false;
         break;
 
-      case scope.keys.BOTTOM:
-        scope.pan( 0, - scope.keyPanSpeed );
-        scope.update();
+      case scope.keys.A:
+        scope.keys.aDown = true;
+        scope.keys.dDown = false;
         break;
 
-      case scope.keys.LEFT:
-        scope.pan( scope.keyPanSpeed, 0 );
-        scope.update();
+      case scope.keys.S:
+        scope.keys.sDown = true;
+        scope.keys.wDown = false;
         break;
 
-      case scope.keys.RIGHT:
-        scope.pan( - scope.keyPanSpeed, 0 );
-        scope.update();
+      case scope.keys.D:
+        scope.keys.dDown = true;
+        scope.keys.aDown = false;
         break;
-
     }
 
+    scope.update();
+  }
+
+  function onKeyUp(event) {
+
+    if ( scope.enabled === false || scope.noKeys === true || scope.noPan === true ) return;
+
+    // Check key press
+    switch ( event.keyCode ) {
+      case scope.keys.W:
+        scope.keys.wDown = false;
+        break;
+
+      case scope.keys.A:
+        scope.keys.aDown = false;
+        break;
+
+      case scope.keys.S:
+        scope.keys.sDown = false;
+        break;
+
+      case scope.keys.D:
+        scope.keys.dDown = false;
+        break;
+    }
   }
 
   function touchstart( event ) {
@@ -631,6 +669,7 @@ THREE.OrbitControls = function ( object, domElement ) {
   this.domElement.addEventListener( 'touchmove', touchmove, false );
 
   window.addEventListener( 'keydown', onKeyDown, false );
+  window.addEventListener( 'keyup', onKeyUp, false );
 
   // force an update at start
   this.update();

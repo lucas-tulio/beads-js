@@ -114,7 +114,7 @@ function keyPressed(e) {
 
   // Color switch
   switch(e.keyCode) {
-    case 114:
+    case 114: // R
 
       // Clear the board
       var numBeads = beads.length;
@@ -124,21 +124,21 @@ function keyPressed(e) {
       }
       break;
 
-    case 122:
+    case 122: // Z
       // Remove the last bead placed
       var beadToRemove = beads.pop();
       beadToRemove.removeFromScene(scene);
       
       break;
 
-    case 99:
+    case 99: // C
       // Reset camera position
       camera.position.x = 0;
       camera.position.y = 4;
       camera.position.z = 3;
       break;
 
-    case 119:
+    case 116: // T
       // Top view
       camera.position.x = 0;
       camera.position.y = 4;
