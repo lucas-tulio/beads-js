@@ -12,7 +12,7 @@ var currentBeadColor = Bead.colors.red;
 var clickInfo = {
   x: 0,
   y: 0,
-  userHasClicked: false
+  leftMouseDown: false
 };
 
 // Start!
@@ -42,7 +42,9 @@ function init() {
   raycaster = new THREE.Raycaster();
   projector = new THREE.Projector();
   directionVector = new THREE.Vector3();
-  window.addEventListener( 'mousedown', onLeftClick, false );
+  window.addEventListener( 'mousedown', onMouseDown, false );
+  window.addEventListener( 'mouseup', onMouseUp, false );
+  window.addEventListener( 'mousemove', onMouseMove, false );
   window.addEventListener('keypress', keyPressed, false);
   
   // Browser compatibility check
@@ -65,7 +67,7 @@ function init() {
   scene.add(lights[2]);
 
   // Board
-  board = new Board(8, 8);
+  board = new Board(16, 16);
   var boardGeometry = new THREE.BoxGeometry(board.width * board.pinOffset * 2, 0.1, board.height * board.pinOffset * 2);
   var boardMaterial = new THREE.MeshPhongMaterial({color: 0xffffff, specular: 0x111111, shininess: 1});
   var boardMesh = new THREE.Mesh(boardGeometry, boardMaterial);
@@ -100,16 +102,28 @@ function init() {
 /**
  * Controls
  */
-function onLeftClick(e) {
+function onMouseDown(e) {
 
   // Place
   if (e.button == 0) {
-    clickInfo.userHasClicked = true;
+    clickInfo.leftMouseDown = true;
     clickInfo.x = e.clientX;
     clickInfo.y = e.clientY;
   }
 }
+function onMouseUp(e) {
 
+  // Place
+  if (e.button == 0) {
+    clickInfo.leftMouseDown = false;
+    clickInfo.x = e.clientX;
+    clickInfo.y = e.clientY;
+  }
+}
+function onMouseMove(e) {
+  clickInfo.x = e.clientX;
+  clickInfo.y = e.clientY;
+}
 function keyPressed(e) {
 
   // Color switch
@@ -126,8 +140,10 @@ function keyPressed(e) {
 
     case 122: // Z
       // Remove the last bead placed
-      var beadToRemove = beads.pop();
-      beadToRemove.removeFromScene(scene);
+      if (beads.length > 0) {
+        var beadToRemove = beads.pop();
+        beadToRemove.removeFromScene(scene);
+      }
       
       break;
 
@@ -147,17 +163,20 @@ function keyPressed(e) {
 
     // Change colors
     case 49:
-      currentBeadColor = Bead.colors.red; break;
+      currentBeadColor = Bead.colors.black; break;
     case 50:
-      currentBeadColor = Bead.colors.green; break;
+      currentBeadColor = Bead.colors.white; break;
     case 51:
-      currentBeadColor = Bead.colors.blue; break;
+      currentBeadColor = Bead.colors.red; break;
     case 52:
       currentBeadColor = Bead.colors.yellow; break;
   }
 }
 
-function placePinAt(x, z) {
+/**
+ * Game logic
+ */
+function placeBeadAt(x, z) {
 
   // Center on pin
   if (x >= 0.0) {
@@ -203,14 +222,10 @@ function onWindowResize() {
 
 }
 
-/**
- * Logic
- */
 function animate() {
   controls.update();
-
-  if (clickInfo.userHasClicked) {
-    clickInfo.userHasClicked = false;
+  if (clickInfo.leftMouseDown) {
+    
     // The following will translate the mouse coordinates into a number
     // ranging from -1 to 1, where
     //      x == -1 && y == -1 means top-left, and
@@ -239,7 +254,7 @@ function animate() {
       // face belongs. We only care for the object itself.
       var target = intersects[0];
       if (target.object.name == 'board' || target.object.name.startsWith('pin')) {
-        placePinAt(target.point.x, target.point.z);
+        placeBeadAt(target.point.x, target.point.z);
       }
     }
   }

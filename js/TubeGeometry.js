@@ -1,13 +1,13 @@
 function generateTubeGeometry(color) {
 
-  var outerRadius = 0.3;
-  var innerRadius = 0.15;
+  var outerRadius = 0.2;
+  var innerRadius = 0.1;
   var segments = 16;
   var radiusSegments = 16;
   var tubeColor = color;
   var endTubeColor = color;
 
-  var tubePath = [{"point": new THREE.Vector3(0, -0.1, 0)}, {"point": new THREE.Vector3(0, 0.4, 0)}];
+  var tubePath = [{"point": new THREE.Vector3(0, -0.1, 0)}, {"point": new THREE.Vector3(0, 0.5, 0)}];
   var actualPoints = [];
   for(var i = 0; i < tubePath.length; i++) {
     actualPoints.push(tubePath[i].point);
@@ -19,8 +19,8 @@ function generateTubeGeometry(color) {
   outerTube.verticesNeedUpdate = true;
   outerTube.dynamic = true;
 
-  var outerTubeMesh = new THREE.Mesh(outerTube, new THREE.MeshPhongMaterial({
-    specular: 0xffffff, shininess: 1, color: tubeColor, side: THREE.DoubleSide
+  var outerTubeMesh = new THREE.Mesh(outerTube, new THREE.MeshLambertMaterial({
+    color: tubeColor, side: THREE.DoubleSide
   }));
   outerTubeMesh.name = "outerTube";
   outerTubeMesh.dynamic = true;
@@ -32,8 +32,8 @@ function generateTubeGeometry(color) {
   innerTube.verticesNeedUpdate = true;
   innerTube.dynamic = true;
 
-  var innerTubeMesh = new THREE.Mesh(innerTube, new THREE.MeshPhongMaterial({
-    specular: 0xffffff, shininess: 1, color: tubeColor, side: THREE.DoubleSide
+  var innerTubeMesh = new THREE.Mesh(innerTube, new THREE.MeshLambertMaterial({
+    color: tubeColor, side: THREE.DoubleSide
   }));
   innerTubeMesh.name = "innerTube";
   innerTubeMesh.dynamic = true;
@@ -58,8 +58,8 @@ function generateTubeGeometry(color) {
 
   first.computeFaceNormals();
   first.mergeVertices();
-  var firstMesh = new THREE.Mesh(first, new THREE.MeshPhongMaterial({
-    specular: 0xffffff, shininess: 1, color: endTubeColor, side: THREE.DoubleSide
+  var firstMesh = new THREE.Mesh(first, new THREE.MeshLambertMaterial({
+    color: endTubeColor, side: THREE.DoubleSide
   }));
 
   var second = new THREE.Geometry();
@@ -92,8 +92,8 @@ function generateTubeGeometry(color) {
 
   second.computeFaceNormals();
   second.mergeVertices();
-  var secondMesh = new THREE.Mesh(second, new THREE.MeshPhongMaterial({
-    specular: 0xffffff, shininess: 1, color: endTubeColor, side: THREE.DoubleSide
+  var secondMesh = new THREE.Mesh(second, new THREE.MeshLambertMaterial({
+    color: endTubeColor, side: THREE.DoubleSide
   }));
 
   return {

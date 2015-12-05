@@ -1,5 +1,4 @@
 var Bead = function (inner, outer, first, second) {
-
   this.inner = inner;
   this.outer = outer;
   this.first = first;
@@ -29,7 +28,7 @@ Bead.prototype.removeFromScene = function(scene) {
 }
 
 Bead.colors = {
-  black: 0x000000,
+  black: 0x111111,
   red: 0xff0000,
   green: 0x00ff00,
   blue: 0x0000ff,
