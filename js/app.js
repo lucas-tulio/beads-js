@@ -42,8 +42,8 @@ function init() {
   // Camera, Scene and Controls
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
   camera.position.x = 0;
-  camera.position.y = 12;
-  camera.position.z = 5;
+  camera.position.y = 4;
+  camera.position.z = 3;
 
   controls = new THREE.OrbitControls(camera);
   controls.addEventListener('change', render);
@@ -144,14 +144,14 @@ function keyPressed(e) {
     case 99:
       // Reset camera position
       camera.position.x = 0;
-      camera.position.y = 12;
-      camera.position.z = 5;
+      camera.position.y = 4;
+      camera.position.z = 3;
       break;
 
     case 119:
       // Top view
       camera.position.x = 0;
-      camera.position.y = 11;
+      camera.position.y = 4;
       camera.position.z = 0;
       break;
 

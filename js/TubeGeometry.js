@@ -15,7 +15,7 @@ function generateTubeGeometry(color) {
   var actualExtrudePath = new THREE.CatmullRomCurve3(actualPoints);
   actualExtrudePath.dynamic = true;
 
-  var outerTube = new THREE.TubeGeometry(actualExtrudePath, segments, outerRadius ,radiusSegments, false, false);
+  var outerTube = new THREE.TubeGeometry(actualExtrudePath, segments, outerRadius, radiusSegments, false, false);
   outerTube.dynamic = true;
   outerTube.verticesNeedUpdate = true;
   outerTube.dynamic = true;
@@ -28,7 +28,7 @@ function generateTubeGeometry(color) {
   outerTubeMesh.needsUpdate = true;
   renderer.sortObjects = false;
 
-  var innerTube = new THREE.TubeGeometry(actualExtrudePath, segments,innerRadius ,radiusSegments, false, false);
+  var innerTube = new THREE.TubeGeometry(actualExtrudePath, segments, innerRadius, radiusSegments, false, false);
   innerTube.dynamic = true;
   innerTube.verticesNeedUpdate = true;
   innerTube.dynamic = true;
@@ -44,7 +44,7 @@ function generateTubeGeometry(color) {
   var first = new THREE.Geometry();
   for (i = 0; i < radiusSegments; i++) {
     var j = i;
-    var k= i*6;
+    var k = i * 6;
 
     first.vertices.push(outerTube.vertices[j+0].clone());
     first.vertices.push(outerTube.vertices[j+1].clone());
@@ -66,7 +66,7 @@ function generateTubeGeometry(color) {
   var second = new THREE.Geometry();
   for (i = 0; i < radiusSegments; i++) {
     var j = i;
-    var k= i*6;
+    var k = i * 6;
 
     second.vertices.push(outerTube.vertices[outerTube.vertices.length-2-j+0].clone());
     second.vertices.push(outerTube.vertices[outerTube.vertices.length-2-j+1].clone());
