@@ -28,10 +28,28 @@ Bead.prototype.removeFromScene = function(scene) {
 }
 
 Bead.colors = {
+
+  // Black, white and gray
   black: 0x111111,
+  gray: 0xbbbbbb,
+  white: 0xffffff,
+
+  // Reds
   red: 0xff0000,
+  
+  // Greens
   green: 0x00ff00,
+  
+  // Blues
   blue: 0x0000ff,
+  lightBlue: 0x00C0FF,
+  iceBlue: 0x6595e9,
+  greenishBlue: 0x008c8a,
+  
+  // Yellows
   yellow: 0xffff00,
-  white: 0xffffff
+  
+  // Browns
+  darkBrown: 0x551605,
+  brown: 0x89441b
 }
